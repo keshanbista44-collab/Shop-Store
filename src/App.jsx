@@ -1,22 +1,114 @@
+import { Routes, Route } from "react-router-dom";
 import { useState } from "react";
+
 import Navbar from "./components/Navbar";
+import CartDrawer from "./components/CartDrawer";
+
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import Wishlist from "./pages/Wishlist";
+import Orders from "./pages/Orders";
+import Profile from "./pages/Profile";
+import Checkout from "./pages/Checkout";
+import ProductDetails from "./pages/ProductDetails";
+
+import ProtectedRoute from "./components/ProtectedRoute";
+
+import { useCart } from "./Context/CartContext";
 
 function App() {
+  const [search, setSearch] = useState("");
   const [cartOpen, setCartOpen] = useState(false);
 
+  const { cart, cartCount } = useCart();
+
   return (
-    <>
+    <div className="min-h-screen bg-gray-100">
+
       <Navbar
-        cartCount={3}
+        cartCount={cartCount}
         onCartOpen={() => setCartOpen(true)}
       />
 
-      {cartOpen && (
-        <div className="fixed right-0 top-0 h-screen w-80 bg-white shadow-2xl p-5">
-          <h2 className="text-2xl font-bold">Shopping Cart</h2>
-        </div>
-      )}
-    </>
+      <CartDrawer
+        open={cartOpen}
+        cart={cart}
+        onClose={() => setCartOpen(false)}
+      />
+
+      <Routes>
+
+        <Route
+          path="/"
+          element={
+            <Home
+              search={search}
+              setSearch={setSearch}
+            />
+          }
+        />
+
+        <Route
+          path="/product/:id"
+          element={<ProductDetails />}
+        />
+
+        <Route
+          path="/checkout"
+          element={<Checkout />}
+        />
+
+        <Route
+          path="/login"
+          element={<Login />}
+        />
+
+        <Route
+          path="/register"
+          element={<Register />}
+        />
+
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/wishlist"
+          element={
+            <ProtectedRoute>
+              <Wishlist />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute>
+              <Orders />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+      </Routes>
+
+    </div>
   );
 }
 
