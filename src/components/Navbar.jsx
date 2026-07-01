@@ -1,150 +1,139 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
+  ShoppingCart,
   Menu,
   X,
-  ShoppingCart,
-  Heart,
-  Moon,
-  Sun,
+  Store,
+  Search,
 } from "lucide-react";
 
-import { useCart } from "../Context/CartContext";
-import { useWishlist } from "../Context/WishlistContext";
-import { useAuth } from "../Context/AuthContext";
-import { useTheme } from "../Context/ThemeContext";
-
-const Navbar = ({ onCartOpen }) => {
+const Navbar = ({ cartCount = 0, onCartOpen }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const { cartCount } = useCart();
-  const { wishlist } = useWishlist();
-  const { user, logout } = useAuth();
-  const { darkMode, toggleTheme } = useTheme();
+  const navLinks = [
+    { name: "Home", href: "#" },
+    { name: "Shop", href: "#shop" },
+    { name: "Categories", href: "#categories" },
+    { name: "About", href: "#about" },
+    { name: "Contact", href: "#contact" },
+  ];
 
   return (
-    <nav className="sticky top-0 z-50 bg-white shadow-md">
-      <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+    <motion.nav
+      initial={{ y: -80 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="sticky top-0 z-50 backdrop-blur-lg bg-white/80 shadow-md"
+    >
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="flex justify-between items-center h-20">
 
-        <Link
-          to="/"
-          className="text-3xl font-bold text-blue-600"
-        >
-          ShopStore
-        </Link>
-
-        <div className="hidden lg:flex items-center gap-8">
-          <Link to="/">Home</Link>
-          <Link to="/wishlist">Wishlist</Link>
-          <Link to="/checkout">Checkout</Link>
-
-          {user && (
-            <Link to="/dashboard">Dashboard</Link>
-          )}
-        </div>
-
-        <div className="hidden lg:flex items-center gap-4">
-
-          <button onClick={toggleTheme}>
-            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </button>
-
-          <Link to="/wishlist" className="relative">
-            <Heart />
-            {wishlist.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex justify-center items-center">
-                {wishlist.length}
-              </span>
-            )}
-          </Link>
-
-          <button
-            onClick={onCartOpen}
-            className="relative"
+          {/* Logo */}
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            className="flex items-center gap-2 cursor-pointer"
           >
-            <ShoppingCart />
-            {cartCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-blue-600 text-white rounded-full w-5 h-5 text-xs flex justify-center items-center">
-                {cartCount}
-              </span>
-            )}
-          </button>
+            <Store className="text-blue-600" size={30} />
+            <h1 className="text-2xl font-bold text-gray-800">
+              ShopStore
+            </h1>
+          </motion.div>
 
-          {user ? (
-            <>
-              <span>{user.name}</span>
+          {/* Desktop Menu */}
+          <ul className="hidden md:flex items-center gap-8">
+            {navLinks.map((link) => (
+              <motion.li
+                key={link.name}
+                whileHover={{ y: -3 }}
+              >
+                <a
+                  href={link.href}
+                  className="text-gray-700 hover:text-blue-600 transition font-medium"
+                >
+                  {link.name}
+                </a>
+              </motion.li>
+            ))}
+          </ul>
 
-              <button
-                onClick={logout}
-                className="bg-red-500 text-white px-4 py-2 rounded-lg"
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                to="/login"
-                className="border border-blue-600 px-4 py-2 rounded-lg text-blue-600"
-              >
-                Login
-              </Link>
+          {/* Right Side */}
+          <div className="flex items-center gap-4">
 
-              <Link
-                to="/register"
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg"
-              >
-                Register
-              </Link>
-            </>
-          )}
+            {/* Search */}
+            <button className="hidden md:flex p-2 rounded-full hover:bg-gray-100 transition">
+              <Search size={20} />
+            </button>
+
+            {/* Cart */}
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              whileHover={{ scale: 1.08 }}
+              onClick={onCartOpen}
+              className="relative p-2 rounded-full hover:bg-gray-100 transition"
+            >
+              <ShoppingCart size={24} />
+
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs h-5 w-5 rounded-full flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </motion.button>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="md:hidden"
+            >
+              {menuOpen ? (
+                <X size={28} />
+              ) : (
+                <Menu size={28} />
+              )}
+            </button>
+
+          </div>
         </div>
-
-        <button
-          className="lg:hidden"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          {menuOpen ? <X /> : <Menu />}
-        </button>
       </div>
 
+      {/* Mobile Menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="lg:hidden bg-white p-6 space-y-4"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-white shadow-lg"
           >
-            <Link to="/">Home</Link>
+            <ul className="flex flex-col p-5 gap-4">
+              {navLinks.map((link) => (
+                <li key={link.name}>
+                  <a
+                    href={link.href}
+                    onClick={() => setMenuOpen(false)}
+                    className="block text-gray-700 hover:text-blue-600 font-medium"
+                  >
+                    {link.name}
+                  </a>
+                </li>
+              ))}
 
-            <Link to="/wishlist">Wishlist</Link>
-
-            <Link to="/checkout">Checkout</Link>
-
-            {user ? (
-              <>
-                <Link to="/dashboard">Dashboard</Link>
-
-                <button
-                  onClick={logout}
-                  className="bg-red-500 text-white w-full py-2 rounded-lg"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link to="/login">Login</Link>
-
-                <Link to="/register">Register</Link>
-              </>
-            )}
+              <button
+                onClick={() => {
+                  setMenuOpen(false);
+                  onCartOpen?.();
+                }}
+                className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg mt-2 hover:bg-blue-700 transition"
+              >
+                <ShoppingCart size={18} />
+                Cart ({cartCount})
+              </button>
+            </ul>
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </motion.nav>
   );
 };
 
