@@ -1,56 +1,63 @@
+import { Routes, Route } from "react-router-dom";
 import { useState } from "react";
 
 import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import SearchBar from "./components/SearchBar";
-import ProductGrid from "./components/ProductGrid";
 import CartDrawer from "./components/CartDrawer";
-import Footer from "./components/Footer";
+
+import Home from "./pages/Home";
+import Shop from "./pages/Shop";
+import Categories from "./pages/Categories";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Product from "./pages/Product";
+import Checkout from "./pages/Checkout";
+
+import { useCart } from "./Context/CartContext";
 
 function App() {
-  const [cart, setCart] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
-  const [search, setSearch] = useState("");
 
-  // Add product to cart
-  const addToCart = (product) => {
-    setCart([...cart, product]);
-  };
+  const { cart, cartCount } = useCart();
 
   return (
-    <div className="bg-gray-100 min-h-screen">
-
-      {/* Navbar */}
+    <div className="min-h-screen bg-gray-100">
       <Navbar
-        cartCount={cart.length}
+        cartCount={cartCount}
         onCartOpen={() => setCartOpen(true)}
       />
 
-      {/* Hero */}
-      <Hero />
-
-      {/* Search */}
-      <SearchBar
-        search={search}
-        setSearch={setSearch}
-      />
-
-      {/* Products */}
-      <ProductGrid
-        addToCart={addToCart}
-        search={search}
-      />
-
-      {/* Cart Drawer */}
       <CartDrawer
         open={cartOpen}
         cart={cart}
         onClose={() => setCartOpen(false)}
       />
 
-      {/* Footer */}
-      <Footer />
+      <Routes>
+        <Route path="/" element={<Home />} />
 
+        <Route path="/shop" element={<Shop />} />
+
+        <Route path="/categories" element={<Categories />} />
+
+        <Route path="/about" element={<About />} />
+
+        <Route path="/contact" element={<Contact />} />
+
+        <Route path="/product/:id" element={<Product />} />
+
+        <Route path="/checkout" element={<Checkout />} />
+
+        <Route
+          path="*"
+          element={
+            <div className="flex items-center justify-center h-screen">
+              <h1 className="text-5xl font-bold">
+                404 | Page Not Found
+              </h1>
+            </div>
+          }
+        />
+      </Routes>
     </div>
   );
 }

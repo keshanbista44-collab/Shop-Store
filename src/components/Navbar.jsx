@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ShoppingCart,
@@ -12,11 +13,11 @@ const Navbar = ({ cartCount = 0, onCartOpen }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const navLinks = [
-    { name: "Home", href: "#" },
-    { name: "Shop", href: "#shop" },
-    { name: "Categories", href: "#categories" },
-    { name: "About", href: "#about" },
-    { name: "Contact", href: "#contact" },
+    { name: "Home", path: "/" },
+    { name: "Shop", path: "/shop" },
+    { name: "Categories", path: "/categories" },
+    { name: "About", path: "/about" },
+    { name: "Contact", path: "/contact" },
   ];
 
   return (
@@ -24,21 +25,23 @@ const Navbar = ({ cartCount = 0, onCartOpen }) => {
       initial={{ y: -80 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
-      className="sticky top-0 z-50 backdrop-blur-lg bg-white/80 shadow-md"
+      className="sticky top-0 z-50 bg-white shadow-md"
     >
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex justify-between items-center h-20">
 
           {/* Logo */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="flex items-center gap-2 cursor-pointer"
-          >
-            <Store className="text-blue-600" size={30} />
-            <h1 className="text-2xl font-bold text-gray-800">
-              ShopStore
-            </h1>
-          </motion.div>
+          <Link to="/">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="flex items-center gap-2"
+            >
+              <Store className="text-blue-600" size={30} />
+              <h1 className="text-2xl font-bold">
+                ShopStore
+              </h1>
+            </motion.div>
+          </Link>
 
           {/* Desktop Menu */}
           <ul className="hidden md:flex items-center gap-8">
@@ -47,12 +50,12 @@ const Navbar = ({ cartCount = 0, onCartOpen }) => {
                 key={link.name}
                 whileHover={{ y: -3 }}
               >
-                <a
-                  href={link.href}
-                  className="text-gray-700 hover:text-blue-600 transition font-medium"
+                <Link
+                  to={link.path}
+                  className="hover:text-blue-600 transition"
                 >
                   {link.name}
-                </a>
+                </Link>
               </motion.li>
             ))}
           </ul>
@@ -60,37 +63,28 @@ const Navbar = ({ cartCount = 0, onCartOpen }) => {
           {/* Right Side */}
           <div className="flex items-center gap-4">
 
-            {/* Search */}
-            <button className="hidden md:flex p-2 rounded-full hover:bg-gray-100 transition">
+            <button className="hidden md:flex p-2 rounded-full hover:bg-gray-100">
               <Search size={20} />
             </button>
 
-            {/* Cart */}
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              whileHover={{ scale: 1.08 }}
+            <button
               onClick={onCartOpen}
-              className="relative p-2 rounded-full hover:bg-gray-100 transition"
+              className="relative p-2 rounded-full hover:bg-gray-100"
             >
               <ShoppingCart size={24} />
 
               {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs h-5 w-5 rounded-full flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs">
                   {cartCount}
                 </span>
               )}
-            </motion.button>
+            </button>
 
-            {/* Mobile Menu Button */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               className="md:hidden"
             >
-              {menuOpen ? (
-                <X size={28} />
-              ) : (
-                <Menu size={28} />
-              )}
+              {menuOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
 
           </div>
@@ -109,13 +103,13 @@ const Navbar = ({ cartCount = 0, onCartOpen }) => {
             <ul className="flex flex-col p-5 gap-4">
               {navLinks.map((link) => (
                 <li key={link.name}>
-                  <a
-                    href={link.href}
+                  <Link
+                    to={link.path}
                     onClick={() => setMenuOpen(false)}
-                    className="block text-gray-700 hover:text-blue-600 font-medium"
+                    className="block hover:text-blue-600"
                   >
                     {link.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
 
@@ -124,9 +118,8 @@ const Navbar = ({ cartCount = 0, onCartOpen }) => {
                   setMenuOpen(false);
                   onCartOpen?.();
                 }}
-                className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg mt-2 hover:bg-blue-700 transition"
+                className="bg-blue-600 text-white rounded-lg py-2 mt-2"
               >
-                <ShoppingCart size={18} />
                 Cart ({cartCount})
               </button>
             </ul>
