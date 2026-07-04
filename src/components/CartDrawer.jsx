@@ -1,85 +1,99 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
 
-const CartDrawer = ({ open, setOpen, cart }) => {
+const CartDrawer = ({ open, cart, onClose }) => {
   const total = cart.reduce((sum, item) => sum + item.price, 0);
 
   return (
     <AnimatePresence>
+
       {open && (
         <>
-          {/* Background */}
+          {/* Overlay */}
+
           <motion.div
             className="fixed inset-0 bg-black/40 z-40"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setOpen(false)}
+            onClick={onClose}
           />
 
           {/* Drawer */}
-          <motion.div
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ duration: 0.3 }}
-            className="fixed top-0 right-0 w-96 h-screen bg-white shadow-2xl z-50 flex flex-col"
-          >
-            {/* Header */}
-            <div className="flex justify-between items-center p-5 border-b">
-              <h2 className="text-2xl font-bold">Shopping Cart</h2>
 
-              <button onClick={() => setOpen(false)}>
-                <X size={24} />
+          <motion.div
+            initial={{ x: 400 }}
+            animate={{ x: 0 }}
+            exit={{ x: 400 }}
+            transition={{ duration: 0.3 }}
+            className="fixed right-0 top-0 h-screen w-96 bg-white shadow-2xl z-50 flex flex-col"
+          >
+
+            <div className="flex justify-between items-center p-5 border-b">
+
+              <h2 className="text-2xl font-bold">
+                Shopping Cart
+              </h2>
+
+              <button
+                onClick={onClose}
+                className="text-3xl"
+              >
+                ×
               </button>
+
             </div>
 
-            {/* Cart Items */}
-            <div className="flex-1 overflow-y-auto p-5">
+            <div className="flex-1 overflow-y-auto">
+
               {cart.length === 0 ? (
-                <p className="text-gray-500 text-center mt-10">
-                  Your cart is empty.
+                <p className="text-center mt-10 text-gray-500">
+                  Cart is Empty
                 </p>
               ) : (
                 cart.map((item, index) => (
                   <div
                     key={index}
-                    className="flex gap-4 border-b py-4"
+                    className="flex gap-3 p-4 border-b"
                   >
                     <img
                       src={item.image}
                       alt={item.title}
-                      className="w-20 h-20 object-cover rounded"
+                      className="w-20 h-20 rounded object-cover"
                     />
 
-                    <div className="flex-1">
+                    <div>
                       <h3 className="font-semibold">
                         {item.title}
                       </h3>
 
-                      <p className="text-blue-600 font-bold mt-2">
+                      <p className="text-blue-600 font-bold">
                         ${item.price}
                       </p>
                     </div>
+
                   </div>
                 ))
               )}
+
             </div>
 
-            {/* Footer */}
             <div className="border-t p-5">
-              <div className="flex justify-between text-xl font-bold mb-4">
+
+              <div className="flex justify-between mb-4 text-lg font-bold">
                 <span>Total</span>
-                <span>${total.toFixed(2)}</span>
+                <span>${total}</span>
               </div>
 
-              <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg">
+              <button className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition">
                 Checkout
               </button>
+
             </div>
+
           </motion.div>
         </>
       )}
+
     </AnimatePresence>
   );
 };

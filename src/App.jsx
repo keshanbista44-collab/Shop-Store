@@ -1,55 +1,56 @@
-import { Routes, Route } from "react-router-dom";
 import { useState } from "react";
 
 import Navbar from "./components/Navbar";
+import Hero from "./components/Hero";
+import SearchBar from "./components/SearchBar";
+import ProductGrid from "./components/ProductGrid";
 import CartDrawer from "./components/CartDrawer";
-
-import Home from "./pages/Home";
-import Product from "./pages/Product";
-import Checkout from "./pages/Checkout";
-
-import { useCart } from "./Context/CartContext";
+import Footer from "./components/Footer";
 
 function App() {
-  const [search, setSearch] = useState("");
+  const [cart, setCart] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
+  const [search, setSearch] = useState("");
 
-  const { cart, cartCount } = useCart();
+  // Add product to cart
+  const addToCart = (product) => {
+    setCart([...cart, product]);
+  };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="bg-gray-100 min-h-screen">
+
+      {/* Navbar */}
       <Navbar
-        cartCount={cartCount}
+        cartCount={cart.length}
         onCartOpen={() => setCartOpen(true)}
       />
 
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <Home
-              search={search}
-              setSearch={setSearch}
-            />
-          }
-        />
+      {/* Hero */}
+      <Hero />
 
-        <Route
-          path="/product/:id"
-          element={<Product />}
-        />
+      {/* Search */}
+      <SearchBar
+        search={search}
+        setSearch={setSearch}
+      />
 
-        <Route
-          path="/checkout"
-          element={<Checkout />}
-        />
-      </Routes>
+      {/* Products */}
+      <ProductGrid
+        addToCart={addToCart}
+        search={search}
+      />
 
+      {/* Cart Drawer */}
       <CartDrawer
         open={cartOpen}
         cart={cart}
         onClose={() => setCartOpen(false)}
       />
+
+      {/* Footer */}
+      <Footer />
+
     </div>
   );
 }
