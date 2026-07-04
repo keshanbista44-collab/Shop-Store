@@ -13,14 +13,9 @@ const ProductCard = ({ product, addToCart }) => {
       />
 
       <div className="p-5">
+        <h2 className="font-bold text-lg">{product.title}</h2>
 
-        <h2 className="font-bold text-lg">
-          {product.title}
-        </h2>
-
-        <p className="text-gray-500 mt-2">
-          ${product.price}
-        </p>
+        <p className="text-gray-500 mt-2">${product.price}</p>
 
         <button
           onClick={() => addToCart(product)}
@@ -28,7 +23,6 @@ const ProductCard = ({ product, addToCart }) => {
         >
           Add To Cart
         </button>
-
       </div>
     </motion.div>
   );
