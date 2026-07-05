@@ -1,21 +1,37 @@
-import ProductCard from "./ProductCard";
+import { useState } from "react";
 
-const ProductGrid = ({ products }) => {
+import Hero from "../components/Hero";
+import SearchBar from "../components/SearchBar";
+import Categories from "../components/Categories";
+import ProductGrid from "../components/ProductGrid";
+import Footer from "../components/Footer";
+
+import { useCart } from "../Context/CartContext";
+
+const Home = () => {
+  const { addToCart } = useCart();
+
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
   return (
-    <div className="max-w-7xl mx-auto px-6 py-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    <>
+      <Hero />
 
-      {products.length > 0 ? (
-        products.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))
-      ) : (
-        <div className="col-span-full text-center text-gray-500">
-          No products found 😢
-        </div>
-      )}
+      <SearchBar />
 
-    </div>
+      <Categories
+        selected={selectedCategory}
+        setSelected={setSelectedCategory}
+      />
+
+      <ProductGrid
+        addToCart={addToCart}
+        category={selectedCategory}
+      />
+
+      <Footer />
+    </>
   );
 };
 
-export default ProductGrid;
+export default Home;
